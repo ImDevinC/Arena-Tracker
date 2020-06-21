@@ -1,6 +1,7 @@
 #include "arenahandler.h"
 #include "Utils/qcompressor.h"
 #include "themehandler.h"
+#include "linuxlogloader.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
@@ -45,6 +46,8 @@ void ArenaHandler::completeUI()
             this, SLOT(openUserGuide()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
+    connect(ui->pushButton, SIGNAL(clicked()),
+            this, SLOT(openProgressDialog()));
 
     completeRewardsUI();
 }
@@ -569,6 +572,29 @@ void ArenaHandler::openTBProfile()
 {
     if(trackobotUploader == nullptr)   return;
     trackobotUploader->openTBProfile();
+}
+
+void ArenaHandler::openProgressDialog()
+{
+    LinuxLogLoader linuxLogLoader("*/Program Files/Hearthstone", this->ui->tabArena);
+    linuxLogLoader.setModal(true);
+    QObject::connect(&linuxLogLoader, SIGNAL(finished(int)), this, SLOT(dialogCancelled(int)));
+    QObject::connect(&linuxLogLoader, SIGNAL(logLocationFound(QString)), this, SLOT(logLocationFound(QString)));
+    linuxLogLoader.exec();
+}
+
+void ArenaHandler::dialogCancelled(int result)
+{
+    if (result == QDialog::Rejected) {
+        emit pDebug("Dialog cancelled");
+        return;
+    }
+    emit pDebug("Dialog not cancelled");
+}
+
+void ArenaHandler::logLocationFound(QString result)
+{
+    emit pDebug("Found log location: " + result);
 }
 
 

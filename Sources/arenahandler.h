@@ -95,6 +95,9 @@ private slots:
     void openTBProfile();
     void openUserGuide();
     void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void openProgressDialog();
+    void dialogCancelled(int result);
+    void logLocationFound(QString location);
 };
 
 #endif // ARENAHANDLER_H

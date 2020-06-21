@@ -68,6 +68,13 @@
            <number>10</number>
           </property>
           <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Push Button</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
             <property name="spacing">
              <number>0</number>
@@ -1573,8 +1580,8 @@ draft mechanics becoming a patron (3$)</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>435</width>
-               <height>979</height>
+               <width>436</width>
+               <height>934</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">

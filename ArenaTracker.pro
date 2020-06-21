@@ -82,7 +82,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/lavabutton.cpp \
     Sources/Widgets/draftherowindow.cpp \
     Sources/twitchhandler.cpp \
-    Sources/Widgets/twitchbutton.cpp
+    Sources/Widgets/twitchbutton.cpp \
+    linuxlogloader.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/Cards/popularcard.h \
@@ -157,9 +158,11 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/lavabutton.h \
     Sources/Widgets/draftherowindow.h \
     Sources/twitchhandler.h \
-    Sources/Widgets/twitchbutton.h
+    Sources/Widgets/twitchbutton.h \
+    linuxlogloader.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    linuxlogloader.ui
 
 RESOURCES += \
     arenatracker.qrc
