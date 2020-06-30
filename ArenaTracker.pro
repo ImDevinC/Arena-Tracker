@@ -18,6 +18,7 @@ LIBS += -lz
 SOURCES += Sources/main.cpp\
     Sources/Cards/popularcard.cpp \
     Sources/Synergies/draftdropcounter.cpp \
+    Sources/Utils/filefinderdialog.cpp \
     Sources/drawcardhandler.cpp \
     Sources/mainwindow.cpp \
     Sources/logloader.cpp \
@@ -87,6 +88,7 @@ SOURCES += Sources/main.cpp\
 HEADERS  += Sources/mainwindow.h \
     Sources/Cards/popularcard.h \
     Sources/Synergies/draftdropcounter.h \
+    Sources/Utils/filefinderdialog.h \
     Sources/drawcardhandler.h \
     Sources/logloader.h \
     Sources/logworker.h \

@@ -55,6 +55,7 @@ private:
     void addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
     void processDataLogs();
     QString findLinuxLogs(QString pattern);
+    QString findLogs(const QString rootDir, const QString namePattern, const QString dirPattern);
 
 public:
     bool init();

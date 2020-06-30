@@ -1,5 +1,6 @@
 #include "logloader.h"
 #include <QtWidgets>
+#include "Utils/filefinderdialog.h"
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
@@ -68,13 +69,26 @@ bool LogLoader::readSettings()
     return readLogsDirPath() && readLogConfigPath();
 }
 
-
 QString LogLoader::findLinuxLogs(QString pattern)
 {
     QProcess p;
     p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\"");
     p.waitForFinished(-1);
     return QString(p.readAll()).trimmed();
+}
+
+QString LogLoader::findLogs(const QString rootDir, const QString namePattern, const QString dirPattern = "")
+{
+    FileFinderDialog dialog;
+    int result = dialog.showFileSearchDialog(rootDir, QStringList() << namePattern);
+    if (QDialog::Rejected == result || dialog.getFiles().size() == 0) {
+        return QString();
+    }
+    QString file = dialog.getFiles()[0];
+    if (!dirPattern.isEmpty() && !file.contains(dirPattern)) {
+        file = "";
+    }
+    return file;
 }
 
 
@@ -85,20 +99,28 @@ bool LogLoader::readLogsDirPath()
 
     if(logsDirPath.isEmpty())
     {
-        QString initPath = "";
-        logsDirPath = "";
+        QString dirPattern;
 #ifdef Q_OS_WIN
-        initPath = "C:/Program Files (x86)/Hearthstone";
+//        initPath = "C:/Program Files (x86)/Hearthstone";
+        QString srcPath = "C:/Program Files (x86)/Hearthstone";
+        QString nameFilter = "Hearthstone.exe";
 #endif
 #ifdef Q_OS_MAC
-        initPath = "/Applications/Hearthstone";
+//        initPath = "/Applications/Hearthstone";
+        QString srcPath = "/Applications/Hearthstone";
+        QString nameFilter = "Hearthstone.app";
 #endif
 #ifdef Q_OS_LINUX
-        initPath = findLinuxLogs("*/Program Files/Hearthstone");
+//        initPath = findLinuxLogs("*/Program Files/Hearthstone");
+        QString srcPath = QDir::homePath();
+        QString nameFilter = "Hearthstone.exe";
+        dirPattern = "/Program Files/Hearthstone/";
 #endif
-
+        QString initPath = findLogs(srcPath, nameFilter, dirPattern);
+        logsDirPath = "";
         if(!initPath.isEmpty())
         {
+            initPath = initPath.left(initPath.lastIndexOf("/"));
             if(QFileInfo (initPath).exists())
             {
                 logsDirPath = initPath + "/Logs";
@@ -186,18 +208,23 @@ bool LogLoader::readLogConfigPath()
 
 QString LogLoader::createDefaultLogConfig()
 {
-    QString initPath = "";
+    QString dirPattern = "";
 #ifdef Q_OS_WIN
-    initPath = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
+    QString rootDir = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone";
+//    initPath = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
 #endif
 #ifdef Q_OS_MAC
-    initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
+    QString rootDir = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone";
+//    initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
 #endif
 #ifdef Q_OS_LINUX
-    initPath = findLinuxLogs("*/Local Settings/Application Data/Blizzard/Hearthstone");
-    if(!initPath.isEmpty())     initPath += "/log.config";
+    QString rootDir = QDir::homePath();
+    dirPattern = "/Blizzard/Hearthstone/";
+//    initPath = findLinuxLogs("*/Local Settings/Application Data/Blizzard/Hearthstone");
+//    if(!initPath.isEmpty())     initPath += "/log.config";
 #endif
-
+    QString filePattern = "log.config";
+    QString initPath = findLogs(rootDir, filePattern, dirPattern);
     if(initPath.isEmpty()) return "";
 
     QFileInfo logConfigFI(initPath);
