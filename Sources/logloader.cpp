@@ -84,9 +84,16 @@ QString LogLoader::findLogs(const QString rootDir, const QString namePattern, co
     if (QDialog::Rejected == result || dialog.getFiles().size() == 0) {
         return QString();
     }
-    QString file = dialog.getFiles()[0];
-    if (!dirPattern.isEmpty() && !file.contains(dirPattern)) {
-        file = "";
+    QString file = "";
+    for (auto f : dialog.getFiles()) {
+        // If the user supplied a check pattern, check against it
+        // and if doesn't match, go to the next result
+        if (!dirPattern.isEmpty() && !f.contains(dirPattern)) {
+            continue;
+        }
+        // Return the first result we find
+        file = f;
+        break;
     }
     return file;
 }
